@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "downlevelIteration": true,
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "baseUrl": "./",
+        "paths": {
+            "*": [                
+                "node_modules/*"
+            ]
+        },
+        "allowJs": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": false,
+        "jsx": "react",
+        "strictPropertyInitialization": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "experimentalDecorators": true,
+        "useDefineForClassFields": true
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
+    ]
+}
