@@ -1,17 +1,19 @@
 import { action, makeObservable, observable } from "mobx";
+import { ITreeItem } from "../../../common/models/ITreeItem";
 import { RootStore } from "./root.store";
 
 export interface ILocalCacheStore {
-    data?: string
+    data?: ITreeItem[]
 }
 
 export class LocalCacheStore implements ILocalCacheStore {
 
     private rootStore: RootStore;
 
-    @observable data?: string;
+    @observable data?: ITreeItem[];
 
-    constructor(rootStore: RootStore) {        
+    constructor(rootStore: RootStore) {
+        this.data = [];
         this.rootStore = rootStore;
         makeObservable(this);
     }

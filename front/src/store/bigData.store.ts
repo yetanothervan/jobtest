@@ -1,19 +1,37 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, runInAction } from "mobx";
+import { ITreeItem } from "../../../common/models/ITreeItem";
+import { bigDataService } from "../services/bigdata.service";
 import { RootStore } from "./root.store";
 
 export interface IBigDataStore {
-    data?: string
+    tree?: ITreeItem[],
+    reloadData: () => void
 }
 
 export class BigDataStore implements IBigDataStore {
 
     private rootStore: RootStore;
 
-    @observable data?: string
+    @observable tree?: ITreeItem[];
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
         makeObservable(this);
+    }
+
+    @action reloadData = () => {
+
+        action(async () => {
+            try {
+                const response = await bigDataService.getData()
+                runInAction(() => {
+                    this.tree = [response];
+                });
+            } catch (errs: any) {
+                console.log("Err: " + errs?.message);
+                this.tree = undefined;
+            }
+        })();
     }
 
 }
