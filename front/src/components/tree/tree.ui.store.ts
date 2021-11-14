@@ -1,12 +1,18 @@
 import { action, makeObservable, observable, reaction } from "mobx";
 import { ITreeItem } from "../../../../common/models/ITreeItem";
-
+import { TreeService } from "../../../../common/models/tree.static";
 
 export interface ITree_UiStore {
     data?: ITreeItem[],
-
     expanded: string[],
-    setExpanded: (nodes: string[]) => void
+    setExpanded: (nodes: string[]) => void,
+    getContextMenu?: (nodeId: string) => IMenuItem[] | null
+}
+
+export interface IMenuItem {
+    caption: string,
+    disabled: boolean,
+    onClick: () => void
 }
 
 export class Tree_UiStore implements ITree_UiStore {
@@ -18,8 +24,9 @@ export class Tree_UiStore implements ITree_UiStore {
         this.expanded = nodes;
     }
 
-    constructor() {
+    constructor(getContextMenu: (nodeId: string) => IMenuItem[] | null) {
         this.expanded = [];
+        this.getContextMenu = getContextMenu;
         makeObservable(this);
 
         // auto expand root element
@@ -34,4 +41,7 @@ export class Tree_UiStore implements ITree_UiStore {
             }, { fireImmediately: true }
         );
     }
+
+    getContextMenu: ((nodeId: string) => IMenuItem[] | null) | undefined;
+
 }

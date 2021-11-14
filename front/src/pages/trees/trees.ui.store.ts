@@ -1,11 +1,12 @@
 import { reaction } from "mobx";
 import React from "react";
-import { ITree_UiStore, Tree_UiStore } from "../../components/tree/tree.ui.store";
 import { RootStore } from "../../store";
+import { BigData_UiStore, IBigData_UiStore } from "./bigData.ui.store";
+import { Cached_UiStore, ICached_UiStore } from "./cached.ui.store";
 
 export interface ITreesPage_UiStore {
-    bigDataTree: ITree_UiStore,
-    cachedDataTree: ITree_UiStore
+    bigDataTree: IBigData_UiStore,
+    cachedDataTree: ICached_UiStore
 }
 
 export const TreesPage_UiStoreContext =
@@ -13,20 +14,15 @@ export const TreesPage_UiStoreContext =
 
 export class TreesPages_UiStore implements ITreesPage_UiStore {
 
-    bigDataTree: ITree_UiStore;
-    cachedDataTree: ITree_UiStore;
+    bigDataTree: IBigData_UiStore;
+    cachedDataTree: ICached_UiStore;
     rootStore: RootStore;
 
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
-        this.bigDataTree = new Tree_UiStore();
-        this.cachedDataTree = new Tree_UiStore();
+        this.bigDataTree = new BigData_UiStore(this.rootStore.bigData);
+        this.cachedDataTree = new Cached_UiStore(this.rootStore.localCache);
         // makeObservable(this);
-
-        reaction(
-            () => this.rootStore.bigData.tree,
-            items => this.bigDataTree.data = items, { fireImmediately: true }
-        );
 
     }
 

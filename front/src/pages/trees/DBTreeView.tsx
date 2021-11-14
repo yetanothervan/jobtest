@@ -8,6 +8,6 @@ export const DBTreeView: FC = observer(() => {
     const uistore = useContext(TreesPage_UiStoreContext);
 
     return (
-        <Tree uistore={uistore.bigDataTree} />
+        <Tree uistore={uistore.bigDataTree.myTreeView} />
     );
 });

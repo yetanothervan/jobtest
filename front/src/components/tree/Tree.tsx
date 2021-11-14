@@ -75,7 +75,9 @@ export const Tree: FC<{ uistore: ITree_UiStore }> = observer(({ uistore }) => {
                 }
             >
                 <MenuItem disabled>{contextMenu?.caption}</MenuItem>
-                <MenuItem onClick={handleClose}>Take</MenuItem>
+                {contextMenu?.nodeId && uistore.getContextMenu && uistore.getContextMenu(contextMenu.nodeId)?.map(m => (
+                    <MenuItem key={m.caption} disabled={m.disabled} onClick={m.onClick}>{m.caption}</MenuItem>
+                ))}                
             </Menu>
         </div>
     );

@@ -13,7 +13,7 @@ export class LocalCacheStore implements ILocalCacheStore {
     @observable data?: ITreeItem[];
 
     constructor(rootStore: RootStore) {
-        this.data = [];
+        this.data = undefined;
         this.rootStore = rootStore;
         makeObservable(this);
     }

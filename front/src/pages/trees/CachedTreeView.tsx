@@ -9,7 +9,7 @@ export const CachedTreeView: FC = observer(() => {
     const uistore = useContext(TreesPage_UiStoreContext);
 
     return (
-        <Tree uistore={uistore.cachedDataTree} />
+        <Tree uistore={uistore.cachedDataTree.myTreeView} />
     );
 
 });
