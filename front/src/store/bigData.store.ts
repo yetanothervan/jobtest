@@ -5,7 +5,8 @@ import { RootStore } from "./root.store";
 
 export interface IBigDataStore {
     tree?: ITreeItem[],
-    reloadData: () => void
+    reloadData: () => void,
+    getNode: (id: string) => void
 }
 
 export class BigDataStore implements IBigDataStore {
@@ -32,6 +33,10 @@ export class BigDataStore implements IBigDataStore {
                 this.tree = undefined;
             }
         })();
+    }
+
+    @action getNode = (id: string) => {
+        this.rootStore.getNode(id);
     }
 
 }

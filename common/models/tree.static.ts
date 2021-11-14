@@ -20,6 +20,28 @@ const findItem = (id: string, items: ITreeItem[]): ITreeItem | null => {
     return null;
 }
 
+const findParent = (id: string, items: ITreeItem[]): ITreeItem | null => {
+    const recursive = (id: string, item: ITreeItem): ITreeItem | null => {
+        if (item.id === id) return null;
+        if (item.children === undefined) {
+            return null;
+        }
+        for (let ch of item.children) {
+            if (ch.id === id) return item;
+            const ret = recursive(id, ch);
+            if (ret !== null) return ret;
+        }
+        return null;
+    }
+
+    for (let ch of items) {
+        const ret = recursive(id, ch);
+        if (ret !== null) return ret;
+    }
+    return null;
+}
+
 export const TreeService = {
-    findItem
+    findItem,
+    findParent
 }

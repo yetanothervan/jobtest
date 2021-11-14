@@ -2,22 +2,22 @@ import { v4 } from "uuid";
 import { ITreeItem } from "../../../../common/models/ITreeItem";
 
 const newFolder = (caption: string, parentId?: string): ITreeItem => {
-    return {
-        isFolder: true,
+    return {        
         caption,
         id: v4(),
         parentId,
-        children: []
+        children: [],
+        isDeleted: false
     };
 }
 
 const newItem = (caption: string, parentId: string): ITreeItem => {
-    return {
-        isFolder: false,
+    return {        
         caption,
         id: v4(),
         parentId,
-        children: []
+        children: [],
+        isDeleted: false
     }
 }
 

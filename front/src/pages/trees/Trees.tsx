@@ -28,11 +28,11 @@ const useStyles = makeStyles((theme) =>
         leftSide: {
             flexGrow: 1,            
             display: 'flex',
-            flexDirection: 'column',
-            overflow: 'auto'
+            flexDirection: 'column'            
         },
         leftTree: {
             flexGrow: 1,
+            overflow: 'auto',
             backgroundColor: theme.palette.common.white
         },
         leftPanel: {

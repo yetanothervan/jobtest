@@ -35,15 +35,9 @@ export class BigData_UiStore implements IBigData_UiStore {
             return null;
         }
 
-        if (node?.isFolder) {
-            return [
-                { caption: "Take", disabled: false, onClick: () => { } }
-            ]
-        } else {
-            return [
-                { caption: "Take", disabled: true, onClick: () => { } }
-            ]
-        }
+        return [
+            { caption: "Take", disabled: false, onClick: () => this.store.getNode(nodeId) }
+        ]
     }
 
 }

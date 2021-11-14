@@ -12,6 +12,17 @@ const getData = async (): Promise<ITreeItem> => {
     }
 }
 
+const getNode = async (req: reqs.bigdata.Request_GetNode): Promise<ITreeItem | null> => {
+    try {
+        const response = await
+            axios.post<reqs.bigdata.Response_GetNode>(routes.bigdata.getnode, req);
+        return response.data.node;
+    } catch (err: any) {
+        throw err;
+    }
+}
+
 export const bigDataService = {
-    getData
+    getData,
+    getNode
 }

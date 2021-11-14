@@ -76,8 +76,8 @@ export const Tree: FC<{ uistore: ITree_UiStore }> = observer(({ uistore }) => {
             >
                 <MenuItem disabled>{contextMenu?.caption}</MenuItem>
                 {contextMenu?.nodeId && uistore.getContextMenu && uistore.getContextMenu(contextMenu.nodeId)?.map(m => (
-                    <MenuItem key={m.caption} disabled={m.disabled} onClick={m.onClick}>{m.caption}</MenuItem>
-                ))}                
+                    <MenuItem key={m.caption} disabled={m.disabled} onClick={() => { m.onClick(); handleClose(); }}>{m.caption}</MenuItem>
+                ))}
             </Menu>
         </div>
     );
@@ -93,7 +93,7 @@ const recursiveTree = (node: ITreeItem, onContextMenu: ContextMenuFun) => {
     }
     return (
         <TreeItem onContextMenu={handlerContext} key={node.id} nodeId={node.id} label={node.caption}>
-            {node.isFolder ? node.children.map((node: ITreeItem) => recursiveTree(node, onContextMenu)) : null}
+            {node.children.map((node: ITreeItem) => recursiveTree(node, onContextMenu))}
         </TreeItem >
     );
 };
