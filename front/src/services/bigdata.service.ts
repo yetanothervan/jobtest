@@ -1,5 +1,7 @@
 import axios from "axios";
 import { reqs, routes } from "../../../common";
+import { IAddPending } from "../../../common/models/IAddPending";
+import { IRenamePending } from "../../../common/models/IRenamePending";
 import { ITreeItem } from "../../../common/models/ITreeItem";
 
 const getData = async (): Promise<ITreeItem> => {
@@ -22,7 +24,25 @@ const getNode = async (req: reqs.bigdata.Request_GetNode): Promise<ITreeItem | n
     }
 }
 
+const reset = async () => {
+    try {
+        await axios.get<reqs.bigdata.Response_Reset>(routes.bigdata.reset);
+    } catch (err: any) {
+        throw err;
+    }
+}
+
+const apply = async (req: reqs.bigdata.Request_Apply) => {
+    try {        
+        await axios.post(routes.bigdata.apply, req);
+    } catch (err: any) {
+        throw err;
+    }
+}
+
 export const bigDataService = {
     getData,
-    getNode
+    getNode,
+    reset,
+    apply
 }

@@ -43,4 +43,49 @@ export const bigDataMocks = [
             node
         }));
     }),
+
+    rest.get<{}, reqs.bigdata.Response_Reset>(routes.bigdata.reset, (req, res, ctx) => {
+        sessionStorage.clear();
+        return res();
+    }),
+
+    rest.post<reqs.bigdata.Request_Apply>(routes.bigdata.apply, (req, res, ctx) => {
+        const tree = getOrCreateTree();
+
+        // apply rename
+        const toRename = req.body.renamePending;
+        for (const ren of toRename) {
+            const node = TreeService.findItem(ren.id, [tree]);
+            if (node != null) {
+                node.caption = ren.newCaption;
+            }
+        }
+
+        // apply adding
+        const toAdd = req.body.addPending;
+        for (const add of toAdd) {
+            const node = TreeService.findItem(add.id, [tree]);
+            if (node != null) {
+                // already exist o_0                
+            } else {
+                const parent = TreeService.findItem(add.parentId, [tree]);
+                if (parent !== null) {
+                    parent.children.push({
+                        caption: add.caption,
+                        id: add.id, 
+                        parentId: add.parentId,
+                        isDeleted: false,
+                        children: []
+                    })
+                }
+            }
+        }
+
+        // save tree
+        const treeStr = JSON.stringify(tree);
+        sessionStorage.setItem(treeKey, treeStr);
+
+        return res(ctx.json({
+        }));
+    }),
 ]

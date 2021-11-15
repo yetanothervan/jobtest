@@ -36,7 +36,7 @@ export class BigData_UiStore implements IBigData_UiStore {
         }
 
         return [
-            { caption: "Take", disabled: false, onClick: () => this.store.getNode(nodeId) }
+            { caption: "Забрать", disabled: false, onClick: () => this.store.getNode(nodeId) }
         ]
     }
 

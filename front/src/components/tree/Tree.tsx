@@ -6,7 +6,7 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import { ITreeItem } from '../../../../common/models/ITreeItem';
 import { ITree_UiStore } from './tree.ui.store';
 import { observer } from 'mobx-react-lite';
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem, Typography } from '@material-ui/core';
 
 type ContextMenuFun = (event: React.MouseEvent, caption: string, nodeId: string) => void;
 
@@ -47,7 +47,7 @@ export const Tree: FC<{ uistore: ITree_UiStore }> = observer(({ uistore }) => {
 
     if (uistore.data === undefined) {
         return (<p>
-            NO DATA
+            Нет данных
         </p>);
     }
 
@@ -92,7 +92,12 @@ const recursiveTree = (node: ITreeItem, onContextMenu: ContextMenuFun) => {
         onContextMenu(e, node.caption, node.id);
     }
     return (
-        <TreeItem onContextMenu={handlerContext} key={node.id} nodeId={node.id} label={node.caption}>
+        <TreeItem onContextMenu={handlerContext} key={node.id} nodeId={node.id}
+            label={
+                node.isDeleted
+                    ? <Typography style={{ color: 'red' }}>{node.caption}</Typography>
+                    : <Typography style={{ color: 'black' }}>{node.caption}</Typography>
+            }>
             {node.children.map((node: ITreeItem) => recursiveTree(node, onContextMenu))}
         </TreeItem >
     );

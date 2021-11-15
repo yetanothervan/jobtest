@@ -55,7 +55,7 @@ export const InputStringDlg: FC<{
             </DialogContent>
 
             <DialogActions style={{ marginTop: 16 }}>
-                <Button onClick={setHandler} variant="contained">ОК</Button>
+                <Button color="primary" onClick={setHandler} variant="contained">ОК</Button>
                 <Button onClick={props.onCancel} variant="contained">Отмена</Button>
             </DialogActions>
         </Dialog >

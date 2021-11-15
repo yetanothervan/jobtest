@@ -1,4 +1,6 @@
 import { action, makeObservable, runInAction } from "mobx";
+import { IAddPending } from "../../../common/models/IAddPending";
+import { IRenamePending } from "../../../common/models/IRenamePending";
 import { bigDataService } from "../services/bigdata.service";
 import { BigDataStore, IBigDataStore } from "./bigData.store";
 import { ILocalCacheStore, LocalCacheStore } from "./localCache.store";
@@ -28,6 +30,15 @@ export class RootStore {
                 console.log("Err: " + errs?.message);
             }
         })();
+    }
+
+    @action resetState = () => {
+        this.localCache.clear();
+        this.bigData.reset();
+    }
+
+    @action applyChanges = () => {
+        this.localCache.apply();
     }
 
 }

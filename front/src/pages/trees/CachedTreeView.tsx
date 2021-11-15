@@ -11,8 +11,8 @@ export const CachedTreeView: FC = observer(() => {
 
     //=== handlers
 
-    const handleInputDlgCancel = () => uistore.cancelRenaming();
-    const handleInputDlgSet = (value: string | undefined) => {
+    const handleRenameDlgCancel = () => uistore.cancelRenaming();
+    const handleRenameDlgSet = (value: string | undefined) => {
         if (uistore.renameDlg.id && value) {
             uistore.renameItem(uistore.renameDlg.id, value);
         } else {
@@ -20,14 +20,29 @@ export const CachedTreeView: FC = observer(() => {
         }
     };
 
+    const handleAddNodeDlgCancel = () => uistore.cancelAdding();
+    const handleAddNodeDlgSet = (value: string | undefined) => {
+        if (uistore.addNodeDlg.parentId && value) {
+            uistore.addNode(uistore.addNodeDlg.parentId, value);
+        } else {
+            uistore.cancelAdding();
+        }
+    };
+
     return (
         <>
             <Tree uistore={uistore.myTreeView} />
-            <InputStringDlg onCancel={handleInputDlgCancel}
-                onSet={handleInputDlgSet}
+            <InputStringDlg onCancel={handleRenameDlgCancel}
+                onSet={handleRenameDlgSet}
                 visible={uistore.renameDlg.visible}
                 title='Введите новое значение'
                 value={uistore.renameDlg.oldName}
+            ></InputStringDlg>
+            <InputStringDlg onCancel={handleAddNodeDlgCancel}
+                onSet={handleAddNodeDlgSet}
+                visible={uistore.addNodeDlg.visible}
+                title='Введите значение'
+                value={uistore.addNodeDlg.caption}
             ></InputStringDlg>
         </>
     );

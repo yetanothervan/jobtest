@@ -6,6 +6,7 @@ import { RootStoreContext } from "../../store";
 import { DBTreeView } from "./DBTreeView";
 import { CachedTreeView } from "./CachedTreeView";
 import { TreesPages_UiStore, TreesPage_UiStoreContext } from "./trees.ui.store";
+import CachePanel from "./CachePanel";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -70,7 +71,7 @@ export const Trees: FC = observer(() => {
                             <CachedTreeView />
                         </div>
                         <div className={cl.leftPanel}>
-                            SomePanel
+                            <CachePanel />
                         </div>
                     </div>
 
