@@ -103,6 +103,15 @@ export const bigDataMocks = [
             }
         }
 
+        // check if added elements are deleted
+        for (const add of toAdd) {
+            const parent = TreeService.findParent(add.id, [tree]);
+            const node = TreeService.findItem(add.id, [tree]);
+            if (parent != null && node != null && parent.isDeleted) {
+                node.isDeleted = true;                
+            }
+        }
+
 
         // save tree
         const treeStr = JSON.stringify(tree);
