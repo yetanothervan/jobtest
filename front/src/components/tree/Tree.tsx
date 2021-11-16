@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -93,12 +93,23 @@ const recursiveTree = (node: ITreeItem, onContextMenu: ContextMenuFun) => {
     }
     return (
         <TreeItem onContextMenu={handlerContext} key={node.id} nodeId={node.id}
-            label={
-                node.isDeleted
-                    ? <Typography style={{ color: 'red' }}>{node.caption}</Typography>
-                    : <Typography style={{ color: 'black' }}>{node.caption}</Typography>
-            }>
+            label={<TreeItemNode caption={node.caption} deleted={node.isDeleted}
+                pendingAddRename={node.pendingApply}
+                pendingDelete={node.pendingDelete} />}>
             {node.children.map((node: ITreeItem) => recursiveTree(node, onContextMenu))}
         </TreeItem >
     );
 };
+
+const TreeItemNode: FC<{
+    deleted: boolean,
+    pendingAddRename: boolean,
+    pendingDelete: boolean,
+    caption: string
+}> = memo(({ deleted, pendingAddRename, pendingDelete, caption }) => {
+    return (
+        <Typography style={{ color: (deleted || pendingDelete) ? "red" : "black" }}>
+            {caption}<>{(pendingAddRename || pendingDelete) && <i style={{ color: "red" }}>*</i>}</>
+        </Typography>
+    );
+});

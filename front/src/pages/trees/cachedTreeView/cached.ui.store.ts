@@ -1,7 +1,7 @@
 import { action, makeObservable, observable, reaction } from "mobx";
-import { TreeService } from "../../../../common/models/tree.static";
-import { IMenuItem, ITree_UiStore, Tree_UiStore } from "../../components/tree/tree.ui.store";
-import { ILocalCacheStore } from "../../store/localCache.store";
+import { TreeService } from "../../../../../common/models/tree.static";
+import { IMenuItem, ITree_UiStore, Tree_UiStore } from "../../../components/tree/tree.ui.store";
+import { ILocalCacheStore } from "../../../store/localCache.store";
 
 interface IRenameDlg {
     visible: boolean,
@@ -17,8 +17,8 @@ interface IAddNodeDlg {
 
 export interface ICached_UiStore {
     myTreeView: ITree_UiStore,
-    
-    renameDlg: IRenameDlg,    
+
+    renameDlg: IRenameDlg,
     showRenameDlg: (id: string, oldName: string) => void,
     cancelRenaming: () => void,
     renameItem: (id: string, newName: string) => void,
@@ -33,7 +33,7 @@ export class Cached_UiStore implements ICached_UiStore {
 
     myTreeView: ITree_UiStore;
     store: ILocalCacheStore;
-    
+
     @observable renameDlg: IRenameDlg;
 
     @observable addNodeDlg: IAddNodeDlg;
@@ -109,13 +109,13 @@ export class Cached_UiStore implements ICached_UiStore {
 
         return [
             {
-                caption: "Переименовать", disabled: node.isDeleted, onClick: () => this.showRenameDlg(nodeId, node.caption),                
+                caption: "Переименовать", disabled: node.isDeleted || node.pendingDelete, onClick: () => this.showRenameDlg(nodeId, node.caption),
             },
             {
-                caption: "Удалить", disabled: node.isDeleted, onClick: () => this.store.delete(node.id)
+                caption: "Удалить", disabled: node.isDeleted || node.pendingDelete, onClick: () => this.store.delete(node.id)
             },
             {
-                caption: "Добавить", disabled: node.isDeleted, onClick: () => this.showAddNodeDlg(nodeId, 'Новый элемент')
+                caption: "Добавить", disabled: node.isDeleted || node.pendingDelete, onClick: () => this.showAddNodeDlg(nodeId, 'Новый элемент')
             },
         ]
     }

@@ -1,7 +1,5 @@
 import axios from "axios";
 import { reqs, routes } from "../../../common";
-import { IAddPending } from "../../../common/models/IAddPending";
-import { IRenamePending } from "../../../common/models/IRenamePending";
 import { ITreeItem } from "../../../common/models/ITreeItem";
 
 const getData = async (): Promise<ITreeItem> => {
@@ -33,7 +31,7 @@ const reset = async () => {
 }
 
 const apply = async (req: reqs.bigdata.Request_Apply) => {
-    try {        
+    try {
         await axios.post(routes.bigdata.apply, req);
     } catch (err: any) {
         throw err;

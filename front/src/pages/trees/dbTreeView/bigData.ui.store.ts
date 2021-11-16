@@ -1,7 +1,7 @@
 import { reaction } from "mobx";
-import { TreeService } from "../../../../common/models/tree.static";
-import { IMenuItem, ITree_UiStore, Tree_UiStore } from "../../components/tree/tree.ui.store";
-import { IBigDataStore } from "../../store/bigData.store";
+import { TreeService } from "../../../../../common/models/tree.static";
+import { IMenuItem, ITree_UiStore, Tree_UiStore } from "../../../components/tree/tree.ui.store";
+import { IBigDataStore } from "../../../store/bigData.store";
 
 export interface IBigData_UiStore {
     myTreeView: ITree_UiStore

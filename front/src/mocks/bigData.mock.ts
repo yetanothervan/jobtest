@@ -52,15 +52,6 @@ export const bigDataMocks = [
     rest.post<reqs.bigdata.Request_Apply>(routes.bigdata.apply, (req, res, ctx) => {
         const tree = getOrCreateTree();
 
-        // apply rename
-        const toRename = req.body.renamePending;
-        for (const ren of toRename) {
-            const node = TreeService.findItem(ren.id, [tree]);
-            if (node != null) {
-                node.caption = ren.newCaption;
-            }
-        }
-
         // apply adding
         const toAdd = req.body.addPending;
         for (const add of toAdd) {
@@ -72,14 +63,46 @@ export const bigDataMocks = [
                 if (parent !== null) {
                     parent.children.push({
                         caption: add.caption,
-                        id: add.id, 
+                        id: add.id,
                         parentId: add.parentId,
                         isDeleted: false,
-                        children: []
+                        children: [],
+                        pendingApply: false,
+                        pendingDelete: false
                     })
                 }
             }
         }
+
+        // apply rename
+        const toRename = req.body.renamePending;
+        for (const ren of toRename) {
+            const node = TreeService.findItem(ren.id, [tree]);
+            if (node != null) {
+                node.caption = ren.newCaption;
+            }
+        }
+
+        // apply delete
+        const toDelete = req.body.deletePending;
+        for (const del of toDelete) {
+            const node = TreeService.findItem(del, [tree]);
+            if (node != null) {
+                node.isDeleted = true;
+
+                TreeService.applyToAll([tree], (parent, item) => {
+                    if (item.isDeleted) {
+                        return;
+                    }
+                    if (parent?.isDeleted) {
+                        item.isDeleted = true;                        
+                        return;
+                    }
+                });
+
+            }
+        }
+
 
         // save tree
         const treeStr = JSON.stringify(tree);

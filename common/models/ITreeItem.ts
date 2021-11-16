@@ -3,5 +3,7 @@ export interface ITreeItem {
     id: string;
     parentId?: string;
     children: ITreeItem[];
-    isDeleted: boolean
+    isDeleted: boolean,
+    pendingDelete: boolean,
+    pendingApply: boolean
 }

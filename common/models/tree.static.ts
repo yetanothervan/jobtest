@@ -41,7 +41,21 @@ const findParent = (id: string, items: ITreeItem[]): ITreeItem | null => {
     return null;
 }
 
+const applyToAll = (items: ITreeItem[], applyFunc: (parent: ITreeItem | undefined, node: ITreeItem) => void): void => {
+    const recursive = (items: ITreeItem[], parent: ITreeItem, applyFunc: (parent: ITreeItem | undefined, node: ITreeItem) => void): void => {
+        for (let ch of items) {
+            applyFunc(parent, ch);
+            recursive(ch.children, ch, applyFunc);
+        }
+    }
+    for (let ch of items) {
+        applyFunc(undefined, ch);
+        recursive(ch.children, ch, applyFunc);
+    }
+}
+
 export const TreeService = {
     findItem,
-    findParent
+    findParent,
+    applyToAll
 }

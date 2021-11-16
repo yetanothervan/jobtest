@@ -1,8 +1,8 @@
 import { action, makeObservable, reaction } from "mobx";
 import React from "react";
 import { RootStore } from "../../store";
-import { BigData_UiStore, IBigData_UiStore } from "./bigData.ui.store";
-import { Cached_UiStore, ICached_UiStore } from "./cached.ui.store";
+import { BigData_UiStore, IBigData_UiStore } from "./dbTreeView/bigData.ui.store";
+import { Cached_UiStore, ICached_UiStore } from "./cachedTreeView/cached.ui.store";
 
 export interface ITreesPage_UiStore {
     bigDataTree: IBigData_UiStore,

@@ -46,17 +46,32 @@ export class LocalCacheStore implements ILocalCacheStore {
 
     @action giveNode = (node: ITreeItem) => {
 
+        // func
+        const removeFromPending = (pId: string) => {
+            if (this.pendingRename.find(p => p.id === pId)) {
+                this.pendingRename = this.pendingRename.filter(p => p.id !== pId);
+            }
+            if (this.pendingDelete.find(p => p === pId)) {
+                this.pendingDelete = this.pendingDelete.filter(p => p !== pId);
+            }
+        }
+
         // if tree is empty
         if (this.data === undefined) {
             this.data = [node];
+            this.deleteRecalculate();
             return;
         }
 
         // search for the same node
         const sameNode = TreeService.findItem(node.id, this.data);
-        if (sameNode !== null) { // update from DB            
+        if (sameNode !== null) { // update from DB
             sameNode.caption = node.caption;
             sameNode.isDeleted = node.isDeleted;
+            sameNode.pendingApply = false;
+            sameNode.pendingDelete = false;
+            removeFromPending(sameNode.id);
+            this.deleteRecalculate();
             return;
         }
 
@@ -81,73 +96,145 @@ export class LocalCacheStore implements ILocalCacheStore {
         if (node.parentId == undefined) {
             this.data = [...this.data, node];
         }
+
+        this.deleteRecalculate();
     }
 
     @action rename = (nodeId: string, newName: string) => {
-        if (this.data) {
-            const node = TreeService.findItem(nodeId, this.data);
-            if (node && node.caption !== newName) {
-                node.caption = newName;
-                
-                // find toAdd pending (in case new file renaming)
-                const toAddPending = this.pendingNew.find(p => p.id === nodeId);
-                if (toAddPending !== undefined) {
-                    toAddPending.caption = newName;
-                    return;
-                }
 
-                // find rename pending
-                const pending = this.pendingRename.find(p => p.id === nodeId);
-                if (pending !== undefined) {
-                    pending.newCaption = newName;
-                } else {
-                    this.pendingRename.push({
-                        id: nodeId,
-                        newCaption: newName
-                    })
-                }
-
-
-            }
+        // return if no data
+        if (this.data == undefined) {
+            return;
         }
+
+        // return if no node or same caption
+        const node = TreeService.findItem(nodeId, this.data);
+        if (node === null || node.caption === newName) return;
+
+        // find toAdd pending (in case new file renaming)
+        const toAddPending = this.pendingNew.find(p => p.id === nodeId);
+        if (toAddPending !== undefined) {
+            toAddPending.caption = newName;
+            return;
+        }
+
+        // find rename pending
+        const pending = this.pendingRename.find(p => p.id === nodeId);
+        if (pending !== undefined) {
+            pending.newCaption = newName;
+        } else {  // create new rename pending
+            this.pendingRename.push({
+                id: nodeId,
+                newCaption: newName
+            })
+        }
+
+        // do rename
+        node.caption = newName;
+        node.pendingApply = true;
     }
 
     @action delete = (nodeId: string) => {
-        if (this.data) {
-            const node = TreeService.findItem(nodeId, this.data);
-            if (node) {
-                node.isDeleted = true;
-                for (const child of node.children) {
-                    child.isDeleted = true;
+
+        // return if no data
+        if (this.data == undefined) {
+            return;
+        }
+
+        //return if no node
+        const node = TreeService.findItem(nodeId, this.data);
+        if (node === null) {
+            return;
+        }
+
+        //return if already in pending delete
+        if (this.pendingDelete.find(p => p == nodeId) !== undefined) {
+            return;
+        }
+
+        //add to pending, recalculate delete
+        this.pendingDelete.push(nodeId);
+        this.deleteRecalculate();
+    }
+
+    @action deleteRecalculate = () => {
+        // return if no data
+        if (this.data == undefined) {
+            return;
+        }
+
+        TreeService.applyToAll(this.data, (parent, item) => {
+
+            const removeFromPending = (pId: string) => {
+                if (this.pendingDelete.includes(pId)) {
+                    this.pendingDelete = this.pendingDelete.filter(p => p !== pId);
                 }
             }
-        }
+
+            if (item.isDeleted) {
+                return;
+            }
+
+            if (parent?.isDeleted) {
+                item.isDeleted = true;
+                item.pendingDelete = false;
+                removeFromPending(item.id);
+                return;
+            }
+
+            if (parent?.pendingDelete) {
+                item.pendingDelete = true;
+                return;
+            }
+
+            if (this.pendingDelete.includes(item.id)) {
+                item.pendingDelete = true;
+                return;
+            }
+
+            item.pendingDelete = false;
+        });
     }
 
     @action addNode = (parentId: string, caption: string) => {
 
-        if (this.data) {
-            const parent = TreeService.findItem(parentId, this.data);
-            if (parent && !parent.isDeleted) {
-                const id = v4();
-                parent.children.push({
-                    caption,
-                    id,
-                    children: [],
-                    isDeleted: false,
-                    parentId
-                });
-                this.pendingNew.push({
-                    parentId,
-                    caption,
-                    id 
-                });
-            }
+        // return if no data
+        if (this.data == undefined) {
+            return;
+        }
+
+        const parent = TreeService.findItem(parentId, this.data);
+        if (parent && !parent.isDeleted && !parent.pendingDelete) {
+            const id = v4();
+            parent.children.push({
+                caption,
+                id,
+                children: [],
+                isDeleted: false,
+                parentId,
+                pendingApply: true,
+                pendingDelete: false
+            });
+            this.pendingNew.push({
+                parentId,
+                caption,
+                id
+            });
         }
     }
 
     @action apply = () => {
         this.rootStore.bigData.apply(this.pendingRename, this.pendingNew, this.pendingDelete);
+
+        if (this.data) {
+            TreeService.applyToAll(this.data, (parent, item) => {
+                item.pendingApply = false;
+                if (item.pendingDelete) {
+                    item.isDeleted = true;
+                    item.pendingDelete = false;
+                }
+            })
+        }
 
         this.pendingRename = [];
         this.pendingDelete = [];

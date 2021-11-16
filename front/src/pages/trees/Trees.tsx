@@ -3,8 +3,8 @@ import { observer } from "mobx-react-lite";
 import React, { useContext } from "react";
 import { FC } from "react";
 import { RootStoreContext } from "../../store";
-import { DBTreeView } from "./DBTreeView";
-import { CachedTreeView } from "./CachedTreeView";
+import { DBTreeView } from "./dbTreeView/DBTreeView";
+import { CachedTreeView } from "./cachedTreeView/CachedTreeView";
 import { TreesPages_UiStore, TreesPage_UiStoreContext } from "./trees.ui.store";
 import CachePanel from "./CachePanel";
 

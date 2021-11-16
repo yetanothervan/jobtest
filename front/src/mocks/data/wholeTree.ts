@@ -7,7 +7,9 @@ const newFolder = (caption: string, parentId?: string): ITreeItem => {
         id: v4(),
         parentId,
         children: [],
-        isDeleted: false
+        isDeleted: false,
+        pendingApply: false,
+        pendingDelete: false
     };
 }
 
@@ -17,7 +19,9 @@ const newItem = (caption: string, parentId: string): ITreeItem => {
         id: v4(),
         parentId,
         children: [],
-        isDeleted: false
+        isDeleted: false,
+        pendingApply: false,
+        pendingDelete: false
     }
 }
 
