@@ -239,6 +239,17 @@ export class LocalCacheStore implements ILocalCacheStore {
         this.pendingRename = [];
         this.pendingDelete = [];
         this.pendingNew = [];
+
+        // fetch all non-deleted nodes of cache from DB
+        if (this.data) {
+            const nodeIds: string[] = [];
+            TreeService.applyToAll(this.data, (p, i) => {
+                if (i.isDeleted !== true) {
+                    nodeIds.push(i.id);
+                }
+            });
+            this.rootStore.getBulkNodes(nodeIds);
+        }
     }
 
 }
